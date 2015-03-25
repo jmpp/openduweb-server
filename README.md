@@ -5,6 +5,8 @@ Repository privé du code serveur de l'API qui sera utilisée pour l'épreuve n�
 
 ------
 
+Pour installer les dépendances : `npm install`
+
 Pour lancer le serveur : `node app.js`
 
 Les 2 URLs à pouvant être appelées sont :
