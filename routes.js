@@ -37,10 +37,9 @@ function putMessage(req, res) {
   if (!name || !message)
     return res.status(500).end("`name` and `message` must be provided and not empty");
 
+  var jsonData;
   FS.read('messages.json')
-    .then(function(data) {
-      return JSON.parse(data);
-    })
+    .then(JSON.parse)
     .then(function(data) {
       data.push({
         name: name,
@@ -49,17 +48,10 @@ function putMessage(req, res) {
       return data;
     })
     .then(function(data) {
+      jsonData = data;
       return FS.write('messages.json', JSON.stringify(data));
     })
-    .then(function() {
-      return FS.read('messages.json')
-    })
     .then(function(data) {
-      return JSON.parse(data);
-    })
-    .then(function(data) {
-      // console.log(data);
-      // console.log(data.toString());
       res.status(200).json(data);
     })
     .then(null, function() {
