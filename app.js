@@ -2,17 +2,19 @@
 
 require('colors');
 
-var http       = require('http');
-var fs         = require('fs');
-var express    = require('express');
-var bodyParser = require('body-parser');
-var morgan     = require('morgan');
+var http           = require('http');
+var fs             = require('fs');
+var express        = require('express');
+var methodOverride = require('method-override');
+var bodyParser     = require('body-parser');
+var morgan         = require('morgan');
 
-var app        = express();
-var server     = http.createServer(app);
+var app            = express();
+var server         = http.createServer(app);
 
 app.set('port', 1337);
 
+app.use(methodOverride('_method'));
 app.use(morgan('combined'));
 app.use(bodyParser.urlencoded({ extended: true }));
 
