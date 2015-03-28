@@ -1,24 +1,23 @@
 var express      = require('express');
 var FS           = require('q-io/fs');
+var low          = require('lowdb');
 var sanitizeHtml = require('sanitize-html');
 
 var router = new express.Router();
+var db     = low('db.json');
 
 router.get('/getMessages', getMessages);
 router.put('/putMessage', putMessage);
 
 function getMessages(req, res) {
-  FS.read('messages.json')
-    .then(JSON.parse)
-    .then(function(data) {
-      res.status(200).json(data);
-    })
-    .then(null, function() {
-      res.status(500).end("Internal error :/ Please contact support");
-    });    
+  var jsonData = db('messages').value();
+  res.status(200).json(jsonData);  
 }
 
 function putMessage(req, res) {
+  if (typeof req.body.name !== 'string' || typeof req.body.message !== 'string')
+    return res.status(500).end("`name` and `message` must be a String");
+
   var name    = (req.body.name || "").trim();
   var message = (req.body.message || "").trim();
 
@@ -29,26 +28,9 @@ function putMessage(req, res) {
   if (!name || !message)
     return res.status(500).end("`name` and `message` must be provided and not empty");
 
-  var jsonData;
-  FS.read('messages.json')
-    .then(JSON.parse)
-    .then(function(data) {
-      data.push({
-        name: name,
-        message: message
-      });      
-      return data;
-    })
-    .then(function(data) {
-      jsonData = data;
-      return FS.write('messages.json', JSON.stringify(data));
-    })
-    .then(function(data) {
-      res.status(200).json(jsonData);
-    })
-    .then(null, function() {
-      res.status(500).end("Internal error :/ Please contact support");
-    });
+  db('messages').push({ name: name, message: message });
+  var jsonData = db('messages').value();
+  res.status(200).json(jsonData);
 }
 
 module.exports = router;
