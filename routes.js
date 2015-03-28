@@ -1,5 +1,4 @@
 var express      = require('express');
-var FS           = require('q-io/fs');
 var low          = require('lowdb');
 var sanitizeHtml = require('sanitize-html');
 
