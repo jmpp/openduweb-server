@@ -10,7 +10,11 @@ router.get('/getMessages', getMessages);
 router.put('/putMessage', putMessage);
 
 function getMessages(req, res) {
-  var jsonData = db('messages').value();
+  var jsonData = db('messages')
+                  .chain()
+                  .sortByOrder('postedAt', false) // DESC
+                  .take(10)
+                  .value();
   res.status(200).json(jsonData);  
 }
 
@@ -28,8 +32,19 @@ function putMessage(req, res) {
   if (!name || !message)
     return res.status(500).end("`name` and `message` must be provided and not empty");
 
-  db('messages').push({ name: name, message: message });
-  var jsonData = db('messages').value();
+  var messagesDB = db('messages');
+  messagesDB.push({
+    name     : name,
+    message  : message,
+    postedAt : Date.now()
+  });
+
+  var jsonData = messagesDB
+    .chain()
+    .sortByOrder('postedAt', false) // DESC
+    .take(10)
+    .value();
+
   res.status(200).json(jsonData);
 }
 
