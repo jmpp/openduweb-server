@@ -3,11 +3,13 @@
 require('colors');
 
 var http           = require('http');
+var path           = require('path');
 var fs             = require('fs');
 var express        = require('express');
 var methodOverride = require('method-override');
 var bodyParser     = require('body-parser');
 var morgan         = require('morgan');
+var compression    = require('compression');
 
 var app            = express();
 var server         = http.createServer(app);
@@ -27,6 +29,7 @@ app.use(function(req, res, next) {
 });
 
 // Routing
+app.use(compression()); // gzip/deflate
 app.use(require('./routes.js'));
 
 // Launching server

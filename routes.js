@@ -7,6 +7,9 @@ var db     = low('db.json');
 
 router.get('/getMessages', getMessages);
 router.put('/putMessage', putMessage);
+router.post('/putMessage', function(req, res) {
+  res.status(405).end("Method POST is not allowed. You should prefer using PUT to create new messages")
+});
 
 function getMessages(req, res) {
   var jsonData = db('messages')
