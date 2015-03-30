@@ -7,9 +7,14 @@ var db     = low('db.json');
 
 router.get('/getMessages', getMessages);
 router.put('/putMessage', putMessage);
-router.post('/putMessage', function(req, res) {
-  res.status(405).end("Method POST is not allowed. You should prefer using PUT to create new messages")
-});
+router.post('/putMessage', getMessage);
+router.get('/putMessage', getMessage);
+
+function getMessage(req, res) {
+  // res.status(405).end("Method POST is not allowed. You should prefer using PUT to create new messages");
+  res.views.index.error = { code : 405, message : 'Method '+ req.method.toUpperCase() +' is not allowed. You should prefer using PUT to create new messages' };
+  res.status(405).render('index', res.views.index);
+}
 
 function getMessages(req, res) {
   var jsonData = db('messages')
@@ -21,8 +26,11 @@ function getMessages(req, res) {
 }
 
 function putMessage(req, res) {
-  if (typeof req.body.name !== 'string' || typeof req.body.message !== 'string')
-    return res.status(500).end("`name` and `message` must be a String");
+  if (typeof req.body.name !== 'string' || typeof req.body.message !== 'string') {
+    // return res.status(500).end("`name` and `message` must be a String");
+    res.views.index.error = { code : 500, message : '`name` and `message` must be a String' };
+    return res.status(500).render('index', res.views.index);
+  }
 
   var name    = (req.body.name || "").trim();
   var message = (req.body.message || "").trim();
@@ -31,8 +39,11 @@ function putMessage(req, res) {
   name    = sanitizeHtml(name);
   message = sanitizeHtml(message);
 
-  if (!name || !message)
-    return res.status(500).end("`name` and `message` must be provided and not empty");
+  if (!name || !message) {
+    // return res.status(500).end("`name` and `message` must be provided and not empty");
+    res.views.index.error = { code : 500, message : '`name` and `message` must be provided and not empty' };
+    return res.status(500).render('index', res.views.index);
+  }
 
   var messagesDB = db('messages');
   messagesDB.push({

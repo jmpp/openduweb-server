@@ -15,6 +15,8 @@ var app            = express();
 var server         = http.createServer(app);
 
 app.set('port', 1337);
+app.set('views', path.join(__dirname, 'public')); // Override Jade's default /views/ directory
+app.set('view engine', 'jade');
 
 app.use(methodOverride('_method'));
 app.use(morgan('combined'));
@@ -29,8 +31,19 @@ app.use(function(req, res, next) {
 });
 
 // Routing
+app.use(function(req, res, next) {
+  res.views = { index: {
+    method     : req.method,
+    serverRoot : req.protocol + '://' + req.get('host'),
+    fullUrl    : req.protocol + '://' + req.get('host') + req.originalUrl
+  } };
+  next();
+});
 app.use(compression()); // gzip/deflate
 app.use(require('./routes.js'));
+app.use(function(req, res) {
+  res.render('index', res.views.index);
+});
 
 // Launching server
 server.listen(app.get('port'), function() {
