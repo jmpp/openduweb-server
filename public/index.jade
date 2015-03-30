@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+html(lang="en")
+head
+  meta(charset="UTF-8")
+  title Open du Web | API Serveur
+
+  link(rel="stylesheet", href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css")
+  link(rel="stylesheet", href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css")
+  script(src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js")
+  script.
+    hljs.initHighlightingOnLoad();
+body
+
+.container
+  
+  if error
+    br
+    .panel.panel-danger
+      .panel-heading
+        <strong>Oups !</strong> Maître Yoda t'informe que <q>la requête demandée, correctement ne s'est pas executée</q>.
+      .panel-body
+        p Le détail de ta requête actuelle :
+        table.table.table-bordered
+          tr
+            th.text-right(width="20%") URL demandée
+            td
+              code #{fullUrl}
+          tr
+            th.text-right Méthode demandée
+            td
+              code #{method}
+          tr
+            th.text-right Code d'erreur renvoyé
+            td
+              code= error.code
+          tr
+            th.text-right Message d'erreur renvoyé
+            td
+              code= error.message
+    hr
+
+  h1 API Clonebook (Open du Web)
+  hr
+  p.
+    L'API du Clonebook te permet de simplement récupérer la liste des messages du chat et de pouvoir en envoyer.<br>
+    C'est aussi simple que de lire une doc :)
+
+  hr
+  
+  table.table.table-bordered
+    tr.info
+      td(colspan="2")
+        h3 /getMessages
+        p Récupére la liste des 10 derniers messages postés sur le serveur sous forme de JSON.
+    tr
+      th.col-md-2 URL
+      td <code>#{serverRoot}/getMessages</code>
+    tr
+      th Méthode requise
+      td <code>GET</code>
+    tr
+      th Paramètres à fournir
+      td Aucun
+    tr
+      th Valeur de retour
+      td Objet JSON correspondant à la liste des 10 derniers messages
+    tr
+      th Exemple d'utilisation (jQuery)
+      td
+        pre
+          code.js.
+            var req = jQuery.ajax({
+              type : 'GET',
+              url : '#{serverRoot}/getMessages'
+            });
+
+            req.done(function(data) {
+              // Do something with `data`
+            });
+  
+  hr 
+
+  table.table.table-bordered
+    tr.info
+      td(colspan="2")
+        h3 /putMessage
+        p Envoie un nouveau message sur le serveur.
+    tr
+      th.col-md-2 URL
+      td <code>#{serverRoot}/putMessage</code>
+    tr
+      th Méthode requise
+      td <code>PUT</code><br>
+        <small>(La leçon de maître Yoda : <q><i>Pour créer une nouvelle entrée, le verbe http <code>POST</code>, oublier il te faudra. Utiliser le verbe <code>PUT</code>, plutôt tu devras.</i></q></small>
+    tr
+      th Paramètres à fournir
+      td <code>name</code> et <code>message</code> qui représentent respectivement le nom du posteur et son message sur le chat.
+    tr
+      th Valeur de retour
+      td Objet JSON correspondant à la liste des 10 derniers messages (incluant celui que vous venez d'envoyer)
+    tr
+      th Exemple d'utilisation (jQuery)
+      td
+        pre
+          code.js.
+            var req = jQuery.ajax({
+              type : 'PUT',
+              url : '#{serverRoot}/putMessage',
+              data : { name: 'Vador', message: 'Je suis ton père !' }
+            });
+
+            req.done(function(data) {
+              // Do something with `data`
+            });
