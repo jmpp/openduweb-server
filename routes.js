@@ -5,12 +5,12 @@ var sanitizeHtml = require('sanitize-html');
 var router = new express.Router();
 var db     = low('db.json');
 
-router.get('/getMessages', getMessages);
-router.put('/putMessage', putMessage);
-router.post('/putMessage', getMessage);
-router.get('/putMessage', getMessage);
+router.get ('/getMessages', getMessages);
+router.put ('/putMessage' , putMessage);
+router.post('/putMessage' , badMethod);
+router.get ('/putMessage' , badMethod);
 
-function getMessage(req, res) {
+function badMethod(req, res) {
   // res.status(405).end("Method POST is not allowed. You should prefer using PUT to create new messages");
   res.views.index.error = { code : 405, message : 'Method '+ req.method.toUpperCase() +' is not allowed. You should prefer using PUT to create new messages' };
   res.status(405).render('index', res.views.index);
@@ -20,7 +20,7 @@ function getMessages(req, res) {
   var jsonData = db('messages')
                   .chain()
                   .sortByOrder('postedAt', false) // DESC
-                  .take(10)
+                  .take(20)
                   .value();
   res.status(200).json(jsonData);  
 }
@@ -34,6 +34,12 @@ function putMessage(req, res) {
 
   var name    = (req.body.name || "").trim();
   var message = (req.body.message || "").trim();
+
+  // Checking size
+  if (name.length > 20)
+    name = name.slice(0, 20);
+  if (message.length > 255)
+    message = message.slice(0, 255) + " ...";
 
   // Sanitizing HTML injection
   name    = sanitizeHtml(name);
@@ -55,7 +61,7 @@ function putMessage(req, res) {
   var jsonData = messagesDB
     .chain()
     .sortByOrder('postedAt', false) // DESC
-    .take(10)
+    .take(20)
     .value();
 
   res.status(200).json(jsonData);
