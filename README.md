@@ -17,11 +17,11 @@ Les 2 URLs à pouvant être appelées sont :
 
 * **Méthode HTTP** : GET
 * **Paramètres** : Aucun
-* **Valeur de retour** : Un JSON contenant la liste intégrale des messages stockés sur le serveur
+* **Valeur de retour** : Un JSON contenant les 20 derniers messages stockés sur le serveur
 
 /putMessage
 --
 
 * **Méthode HTTP** : PUT
 * **Paramètres** : Un paramètre `name` pour le nom du posteur et `message` pour le message qui va avec
-* **Valeur de retour** : Un JSON contenant la liste intégrale des messages stockés sur le serveur
+* **Valeur de retour** : Un JSON contenant les 20 derniers messages stockés sur le serveur
